@@ -1,6 +1,8 @@
 const client = require('../helpers/elasticClientConnection')
+const { errorHandler } = require('../middleware/errorHandler')
 
 const addItem = async (data) => {
+  console.log('additem', data)
   const { content, price, createdDate } = data
   try {
     await client.index({
@@ -14,27 +16,28 @@ const addItem = async (data) => {
 
     await client.indices.refresh({ index: 'witch-products' })
   } catch (err) {
-    console.log('elastic error', err)
+    errorHandler('elastic error', err)
   }
 }
 
-const searchItem = async (content) => {
-  try {
-    const {
-      hits: { hits, count },
-    } = await client.search({
-      index: 'witch-products',
-      body: {
-        query: {
-          match: { content: content },
+const searchItem = (content) => {
+  return new Promise((resolve, reject) => {
+    client
+      .search({
+        index: 'witch-products',
+        body: {
+          query: {
+            match: { content: content },
+          },
         },
-      },
-    })
-
-    return { hits, total }
-  } catch (err) {
-    console.log(err)
-  }
+      })
+      .then((res) => {
+        resolve(res)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 }
 
 module.exports = { addItem, searchItem }

@@ -1,18 +1,38 @@
 const vision = require('@google-cloud/vision')
 const path = require('path')
 const fs = require('fs')
+const { errorHandler } = require('../middleware/errorHandler')
 // Creates a client
 
 const client = new vision.ImageAnnotatorClient({
   key: 'AIzaSyAKxhb3JVoYlqYRBhfB51SSt1RqfppPdmM',
 })
-const fileName = path.join(__dirname, '.', 'images', 'kakao_1.jpg')
-const getOCR = async () => {
-  let data = []
-
-  const clientData = await client.textDetection(fileName)
-  const mappedData = await mapTextDetection(clientData)
-  return mappedData
+const fileName = path.join(__dirname, '.', 'images', 'ketcap_1.jpg')
+const getOCR = (image) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const imageBuffer = Buffer.from(image, 'base64')
+      const request = {
+        image: {
+          content: imageBuffer,
+        },
+      }
+      client
+        .textDetection(imageBuffer)
+        .then((res) => {
+          if (res[0]?.error) {
+            reject(res[0]?.error)
+          }
+          const mappedData = mapTextDetection(res)
+          resolve(mappedData)
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    } catch (err) {
+      reject(err)
+    }
+  })
 }
 
 const mapTextDetection = async (res) => {
