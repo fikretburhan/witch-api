@@ -16,7 +16,7 @@ app.use(errorHandler)
 app.use('/searchProduct', require('./src/routes/searchProduct'))
 
 app.get('/hello', (req, res) => {
-  res.send({ message: 'hello world' })
+  res.send({ message: 'hello world again' })
 })
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
