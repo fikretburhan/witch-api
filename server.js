@@ -15,4 +15,8 @@ app.use(cors())
 app.use(errorHandler)
 app.use('/searchProduct', require('./src/routes/searchProduct'))
 
+app.get('/hello', (req, res) => {
+  res.send({ message: 'hello world' })
+})
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
