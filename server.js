@@ -8,8 +8,14 @@ const { errorHandler } = require('./src/middleware/errorHandler')
 app.use(express.urlencoded({ extended: false }))
 
 // built-in middleware for json
-app.use(express.json())
 
+// var allowCrossDomain = function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', 'http://localhost:3000')
+//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+//   res.header('Access-Control-Allow-Headers', 'Content-Type')
+
+//   next()
+// }
 app.use(cors())
 
 app.use(errorHandler)
@@ -17,7 +23,8 @@ app.use('/searchProduct', require('./src/routes/searchProduct'))
 
 app.post('/hello', (req, res) => {
   res.send({
-    message: 'hello world again and again',
+    message: 'hello world again bro',
+    data: req.body,
   })
 })
 
