@@ -25,6 +25,7 @@ app.post('/hello', (req, res) => {
   res.send({
     message: 'hello world again bro',
     data: req.body,
+    count: 0,
   })
 })
 
