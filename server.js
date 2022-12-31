@@ -3,10 +3,21 @@ const cors = require('cors')
 const app = express()
 const bodyParser = require('body-parser')
 const multer = require('multer')
-const upload = multer({
-  fileFilter: (req, file, cb) => {
+const uploadMiddleware = multer({
+  limits: {
+    fileSize: 1024 * 1024 * 20,
+  },
+  fileFilter: (req, res, cb) => {
     cb(undefined, true)
   },
+  storage: multer.diskStorage({
+    filename: (req, file, cb) => {
+      cb(null, file.originalname)
+    },
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/')
+    },
+  }),
 })
 const PORT = process.env.PORT || 3500
 const { errorHandler } = require('./src/middleware/errorHandler')
@@ -24,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 //form-urlencoded
 
 // for parsing multipart/form-data
-app.use(upload.array())
+//app.use(upload.array())
 
 var allowCrossDomain = function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -39,7 +50,7 @@ app.use(cors())
 app.use(errorHandler)
 app.use('/searchProduct', require('./src/routes/searchProduct'))
 
-app.post('/hello', upload.single('myimage'), (req, res) => {
+app.post('/hello', uploadMiddleware.single('file'), (req, res) => {
   if (!req.file) {
     return res.json({
       success: false,
