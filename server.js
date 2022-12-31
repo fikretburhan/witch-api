@@ -10,14 +10,14 @@ const uploadMiddleware = multer({
   fileFilter: (req, res, cb) => {
     cb(undefined, true)
   },
-  storage: multer.diskStorage({
-    filename: (req, file, cb) => {
-      cb(null, file.originalname)
-    },
-    destination: (req, file, cb) => {
-      cb(null, 'uploads/')
-    },
-  }),
+  // storage: multer.diskStorage({
+  //   filename: (req, file, cb) => {
+  //     cb(null, file.originalname)
+  //   },
+  //   destination: (req, file, cb) => {
+  //     cb(null, 'uploads/')
+  //   },
+  // }),
 })
 const PORT = process.env.PORT || 3500
 const { errorHandler } = require('./src/middleware/errorHandler')
