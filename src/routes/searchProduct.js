@@ -8,13 +8,17 @@ router.post('/', async (req, res) => {
   getOcr(image)
     .then((response) => {
       const manipulatedData = manipulateOcrData(response)
-      searchItem(manipulatedData.content).then((resData) => {
-        const { hits, total } = resData
-        addItem(manipulatedData)
-        console.log('hits', hits)
-        res.status(200)
-        res.send({ hits: hits })
-      })
+      searchItem(manipulatedData.content)
+        .then((resData) => {
+          const { hits, total } = resData
+          addItem(manipulatedData)
+          console.log('hits', hits)
+          res.status(200)
+          res.send({ hits: hits })
+        })
+        .catch((elkError) => {
+          console.log(elkError)
+        })
     })
     .catch((err) => {
       res.status(500)

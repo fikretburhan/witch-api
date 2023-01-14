@@ -22,6 +22,8 @@ const uploadMiddleware = multer({
 const PORT = process.env.PORT || 3500
 const { errorHandler } = require('./src/middleware/errorHandler')
 const corsOptions = require('./config/corsOptions')
+const { imageCrop } = require('./src/helpers/imageCrop')
+const { searchProduct } = require('./src/controller/searchProduct')
 
 // built-in middleware to handle urlencoded form data
 //app.use(express.urlencoded({ extended: false }))
@@ -48,20 +50,36 @@ app.use(allowCrossDomain)
 app.use(cors())
 
 app.use(errorHandler)
-app.use('/searchProduct', require('./src/routes/searchProduct'))
+//app.use('/searchProduct', require('./src/routes/searchProduct'))
 
-app.post('/hello', uploadMiddleware.single('file'), (req, res) => {
-  if (!req.file) {
-    return res.json({
-      success: false,
-      message: 'dosya yüklenemedi',
-    })
+app.post(
+  '/searchProduct',
+  uploadMiddleware.single('file'),
+  async (req, res) => {
+    if (!req.file) {
+      return res.json({
+        success: false,
+        message: 'Dosya bulunamadı!',
+      })
+    } else {
+      const data = await searchProduct(req.file.buffer)
+      const { hits, total } = data.result.hits
+      if (data.success) {
+        res.status(200)
+        return res.json({
+          success: true,
+          hits: hits,
+          total: total,
+        })
+      } else {
+        res.status(500)
+        return res.json({
+          success: false,
+          error: data.error,
+        })
+      }
+    }
   }
-  return res.json({
-    success: true,
-    message: 'dosya yükleme başarılı',
-    file: req.file,
-  })
-})
+)
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
