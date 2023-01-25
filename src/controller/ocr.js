@@ -6,7 +6,8 @@ const logEvents = require('../middleware/logEvents')
 // Creates a client
 
 const client = new vision.ImageAnnotatorClient({
-  key: 'AIzaSyAKxhb3JVoYlqYRBhfB51SSt1RqfppPdmM',
+  //key: 'AIzaSyAKxhb3JVoYlqYRBhfB51SSt1RqfppPdmM',
+  key: 'AIzaSyClYVdhq9PqswHNhsTWEp-bq_spmGGynHw',
 })
 const fileName = path.join(__dirname, '.', 'images', 'ketcap_1.jpg')
 const getOCR = async (imageBuffer) => {
